@@ -25,11 +25,11 @@ const newBlog = (blogData = {}) => {
   const title = xss(blogData.title)
   const content = xss(blogData.content)
   const author = blogData.author
-  const createTime = Date.now()
+  const createtime = Date.now()
 
   const sql = `
-        insert into blogs (title, content, createtime, author)
-        values ('${title}', '${content}', ${createTime}, '${author}');
+        insert into blogs (title, content, author, createtime)
+        values ('${title}', '${content}', '${author}', ${createtime});
     `
 
   return exec(sql).then(insertData => ({
@@ -44,19 +44,14 @@ const updateBlog = (id, blogData = {}) => {
   const content = xss(blogData.content)
 
   const sql = `
-        update blogs set title='${title}', content='${content}' where id=${id}
+        update blogs set title='${title}', content='${content}' where id=${id};
     `
   return exec(sql).then(updateData => updateData.affectedRows > 0)
 }
 
-const delBlog = (id, author, role) => {
+const delBlog = id => {
   // id 就是要删除博客的 id
-  let sql = ''
-  if (role === 0) {
-    sql = `delete from blogs where id='${id}' and author='${author}';`
-  } else {
-    sql = `delete from blogs where id='${id}';`
-  }
+  const sql = `delete from blogs where id='${id}';`
   return exec(sql).then(delData => delData.affectedRows > 0)
 }
 

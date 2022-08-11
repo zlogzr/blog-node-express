@@ -5,11 +5,12 @@ var fs = require('fs')
 var cookieParser = require('cookie-parser')
 var logger = require('morgan')
 
-var blogRouter = require('./routes/blog')
-var userRouter = require('./routes/user')
 const session = require('express-session')
 const RedisStore = require('connect-redis')(session)
-const loginCheck = require('../middleware/loginCheck')
+const loginCheck = require('./middleware/loginCheck')
+
+var blogRouter = require('./routes/blog')
+var userRouter = require('./routes/user')
 
 var app = express()
 
@@ -39,6 +40,8 @@ const sessionStore = new RedisStore({
 })
 app.use(
   session({
+    resave: false, // 添加 resave 选项
+    saveUninitialized: true, // 添加 saveUninitialized 选项
     secret: 'WJiol_#87834',
     cookie: {
       maxAge: 24 * 60 * 60 * 1000
