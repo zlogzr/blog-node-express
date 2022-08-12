@@ -7,12 +7,13 @@ var logger = require('morgan')
 
 const session = require('express-session')
 const RedisStore = require('connect-redis')(session)
-const loginCheck = require('./middleware/loginCheck')
 
 var blogRouter = require('./routes/blog')
 var userRouter = require('./routes/user')
 
 var app = express()
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'jade')
 
 const ENV = process.env.NODE_ENV
 if (ENV !== 'production') {
@@ -50,7 +51,7 @@ app.use(
   })
 )
 
-app.use('/api/blog', loginCheck, blogRouter)
+app.use('/api/blog', blogRouter)
 app.use('/api/user', userRouter)
 
 // catch 404 and forward to error handler

@@ -4,6 +4,7 @@ var router = express.Router()
 const { getList, getDetail, newBlog, updateBlog, delBlog } = require('../controller/blog')
 
 const { ErrorModel, SuccessModel } = require('../utils/util')
+const loginCheck = require('../middleware/loginCheck')
 
 router.get('/list', function (req, res, next) {
   let author = req.query.author || ''
@@ -22,7 +23,7 @@ router.get('/detail', (req, res, next) => {
   })
 })
 
-router.post('/new', (req, res, next) => {
+router.post('/new', loginCheck, (req, res, next) => {
   req.body.author = req.session.username
   const result = newBlog(req.body)
   result.then(data => {
@@ -30,7 +31,7 @@ router.post('/new', (req, res, next) => {
   })
 })
 
-router.post('/update', (req, res, next) => {
+router.post('/update', loginCheck, (req, res, next) => {
   if (req.session.role === 0 && req.query.id !== req.session.id) {
     res.json(new ErrorModel('权限不足'))
   }
@@ -40,7 +41,7 @@ router.post('/update', (req, res, next) => {
   )
 })
 
-router.post('/del', (req, res, next) => {
+router.post('/del', loginCheck, (req, res, next) => {
   if (req.session.role === 0 && req.query.id !== req.session.id) {
     res.json(new ErrorModel('权限不足'))
   }
